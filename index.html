@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Toc game</title>
+    <!--Google fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lugrasimo&display=swap" rel="stylesheet">
+
+    <!--animated-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+</head>
+
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+        height: 100vh;
+        padding: 0;
+        font-family: "Lugrasimo", cursive;
+    }
+
+    .container {
+        width: 80%;
+        height: 80vh;
+        padding: 5vh 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 4vh;
+        ;
+    }
+
+    .container button {
+        background-color: rgb(104, 26, 62);
+        width: 15rem;
+        height: 5rem;
+        border: none;
+        font-size: 50px;
+        color: white;
+        border-radius: 25px;
+        box-shadow: 0 0 15px rgb(104, 26, 62);
+        transition: 0.3s;
+        cursor: pointer;
+        font-family: "Lugrasimo", cursive !important;
+
+    }
+
+    .container button:hover {
+        transform: scale(1.1);
+        box-shadow: 10px 10px 15px rgb(104, 26, 62);
+        font-size: 55px;
+        animation: jump 0.5s ease infinite;
+    }
+
+    .game-board {
+        width: 70%;
+        height: 100%;
+        display: grid;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+
+    }
+
+    .squre {
+        border: 1px solid rgb(104, 26, 62);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+        font-weight: bolder;
+    }
+
+    .squre:hover {
+        background-color: rgb(216, 197, 197);
+        opacity: 1.2;
+        cursor: pointer;
+    }
+
+    @keyframes jump {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+
+    }
+
+    @media (max-width : 760px) {
+
+        .container {
+            height: 30rem;
+
+        }
+
+        .game-board {
+            width: 40vh;
+        }
+    }
+</style>
+
+<body>
+
+
+    <div class="container  animate__animated animate__fadeInLeft">
+        <button onclick="restartgame()" class="animate__animated animate__bounce">Restart</button>
+
+        <div class="game-board">
+            <div class="squre" id="box1"></div>
+            <div class="squre" id="box2"></div>
+            <div class="squre" id="box3"></div>
+            <div class="squre" id="box4"></div>
+            <div class="squre" id="box5"></div>
+            <div class="squre" id="box6"></div>
+            <div class="squre" id="box7"></div>
+            <div class="squre" id="box8"></div>
+            <div class="squre" id="box9"></div>
+        </div>
+    </div>
+
+
+
+    <script>
+
+        let currentPlayerX = true;
+
+        let board = [
+            [null, null, null],
+            [null, null, null],
+            [null, null, null],
+        ]
+
+        let gameOver = false;
+
+
+
+        alertify.alert('Ready!');
+      
+
+        let squares = document.getElementsByClassName("squre");
+
+        Array.from(squares).forEach((squre, index) => {
+
+            squre.addEventListener("click", function () {
+
+                if (gameOver || squre.innerHTML != "") {
+                    return
+                }
+
+                let value = currentPlayerX ? "X" : "O"
+
+                if (currentPlayerX == true) {
+
+                    currentPlayerX = false
+                } else {
+                    currentPlayerX = true
+                }
+
+
+
+                squre.innerHTML = value
+
+
+
+                board[Math.floor(index / 3)][index % 3] = value;
+
+                if (board[index] === "X" || board[index] === "O") {
+
+                }
+
+
+
+
+
+                checkTheWin()
+                checkDraw()
+
+
+            })
+
+
+        });
+
+
+
+
+
+        function checkTheWin() {
+
+            for (let row = 0; row < 3; row++) {
+
+                if (board[row][0] != null && board[row][0] === board[row][1] && board[row][0] === board[row][2]) {
+                    alertify.alert('Winner', 'YOU Have Won!', function () { alertify.success('Ok'); });
+                    gameOver = true
+                    return
+                }
+            }
+
+            for (let col = 0; col < 3; col++) {
+                if (board[0][col] != null && board[0][col] === board[1][col] && board[0][col] === board[2][col]) {
+                    alertify.alert('Winner', 'YOU Have Won!', function () { alertify.success('Ok'); });
+                    gameOver = true
+                    return
+                }
+            }
+
+
+
+            if (board[0][0] != null && board[0][0] === board[1][1] && board[0][0] === board[2][2]) {
+                gameOver = true
+                alertify.alert('Winner', 'YOU Have Won!', function () { alertify.success('Ok'); });
+            }
+            if (board[0][2] != null && board[0][2] === board[1][1] && board[0][2] === board[2][0]) {
+                gameOver = true
+                alertify.alert('Winner', 'YOU Have Won!', function () { alertify.success('Ok'); });
+            }
+        }
+
+
+        function checkDraw() {
+
+
+            let isDraw = true
+
+            for (let row = 0; row < 3; row++) {
+                for (let col = 0; col < 3; col++) {
+
+                    if (board[row][col] !== "X" && board[row][col] !== "O") {
+                        isDraw = false;
+                    }
+                }
+            }
+            if (isDraw) {
+                alertify.alert('Draw', 'Try Next time !', function () { alertify.success('Ok'); });
+            }
+        }
+
+
+        function restartgame() {
+
+
+
+            Array.from(squares).forEach((e) => {
+                e.innerHTML = ""
+            })
+            gameOver = false
+
+            board = [
+                [null, null, null],
+                [null, null, null],
+                [null, null, null],
+            ]
+            currentPlayerX = true
+
+        }
+    </script>
+</body>
+
+</html>
